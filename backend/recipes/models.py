@@ -1,14 +1,12 @@
 import unidecode as unidecode
-from django.db import models
-from django.conf import settings
-from django.core.validators import (
-    MinValueValidator,
-    MaxValueValidator,
-    RegexValidator,
-)
-from django.utils.text import slugify
-from django.db.models.constraints import UniqueConstraint
 from colorfield.fields import ColorField
+from django.conf import settings
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
+from django.db import models
+from django.db.models.constraints import UniqueConstraint
+from django.utils.text import slugify
+
 from users.models import User
 
 
@@ -36,6 +34,7 @@ class Ingredient(models.Model):
                 name='unique_name_measurement_unit'
             )
         ]
+        ordering = ['name', 'measurement_unit']
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
@@ -129,12 +128,12 @@ class Recipe(models.Model):
         verbose_name='Cooking Time',
         validators=[
             MinValueValidator(
-                1,
+                settings.ONE_MINUTE,
                 message='Cooking time should be at least 1 minute'
             ),
             MaxValueValidator(
-                1441,
-                message='Cooking time should not exceed 24 hours'
+                settings.MAX_COOKING_TIME,
+                message='Cooking time should not exceed 32000 minutes'
             )
         ]
     )
@@ -177,9 +176,10 @@ class FavoriteShoppingCart(models.Model):
                 name='%(app_label)s_%(class)s_unique'
             )
         ]
+        ordering = ['user', 'recipe']
 
     def __str__(self):
-        return f'{self.user} :: {self.recipe}'
+        return f'{self.user} - {self.recipe}'
 
 
 class Favorite(FavoriteShoppingCart):
@@ -191,6 +191,7 @@ class Favorite(FavoriteShoppingCart):
         default_related_name = 'favorites'
         verbose_name = 'Favorite'
         verbose_name_plural = 'Favorites'
+        ordering = ['user', 'recipe']
 
 
 class ShoppingCart(FavoriteShoppingCart):
@@ -202,6 +203,7 @@ class ShoppingCart(FavoriteShoppingCart):
         default_related_name = 'shopping_list'
         verbose_name = 'Shopping Cart'
         verbose_name_plural = 'Shopping Carts'
+        ordering = ['user', 'recipe']
 
 
 class IngredientRecipe(models.Model):
@@ -221,7 +223,7 @@ class IngredientRecipe(models.Model):
         related_name='ingredient_to_recipe'
     )
     amount = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)],
+        validators=[MinValueValidator(settings.ONE_INGREDIENT)],
         verbose_name='Amount'
     )
 
@@ -231,7 +233,5 @@ class IngredientRecipe(models.Model):
         verbose_name_plural = 'Ingredients'
 
     def __str__(self):
-        return (
-            f'{self.ingredient.name} :: {self.ingredient.measurement_unit}'
-            f' - {self.amount} '
-        )
+        return f'{self.ingredient.name} - {self.amount} ' \
+               f'{self.ingredient.measurement_unit}'

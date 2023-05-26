@@ -1,6 +1,7 @@
 from django_filters.rest_framework import FilterSet, filters
-from recipes.models import Ingredient, Recipe, Tag
 from rest_framework.filters import SearchFilter
+
+from recipes.models import Ingredient, Recipe, Tag
 
 
 class IngridientFilter(SearchFilter):
@@ -12,7 +13,8 @@ class IngridientFilter(SearchFilter):
 
      Meta:
          model (Ingredient): The model to which the filter is applied.
-         fields (tuple): The fields on which the filtering is performed, set to ('name',).
+         fields (tuple): The fields on which the filtering is performed,
+         set to ('name',).
      """
     search_param = 'name'
 
@@ -26,14 +28,18 @@ class RecipeFilter(FilterSet):
     Filter class for Recipe model.
 
     Attributes:
-        tags (filters.ModelMultipleChoiceFilter): Filter for tags based on slug field.
+        tags (filters.ModelMultipleChoiceFilter): Filter for tags based
+        on slug field.
+
         is_favorited (filters.NumberFilter): Filter for favorited recipes.
-        is_in_shopping_cart (filters.NumberFilter): Filter for recipes in shopping cart.
+
+        is_in_shopping_cart (filters.NumberFilter): Filter for recipes
+        in shopping cart.
 
     Meta:
         model (Recipe): The model to which the filter is applied.
-        fields (tuple): The fields on which the filtering is performed, including 'tags',
-            'is_favorited', and 'is_in_shopping_cart'.
+        fields (tuple): The fields on which the filtering is performed,
+        including 'tags', 'is_favorited', and 'is_in_shopping_cart'.
     """
     tags = filters.ModelMultipleChoiceFilter(
         field_name='tags__slug',

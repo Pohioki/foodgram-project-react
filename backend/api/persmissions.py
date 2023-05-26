@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
 class AuthorPermission(BasePermission):
@@ -6,9 +6,11 @@ class AuthorPermission(BasePermission):
        Permission class that allows access only to the author of an object.
 
        Methods:
-           has_object_permission(request, view, obj): Determines if the request has permission to access the object.
+           has_object_permission(request, view, obj): Determines
+           if the request has permission to access the object.
 
        """
+
     def has_object_permission(self, request, view, obj):
         """
                 Check if the request has permission to access the object.

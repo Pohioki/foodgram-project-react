@@ -3,13 +3,14 @@ from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
+
+from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+                            ShoppingCart, Tag)
 from users.models import Follow, User
 
 from .filters import IngridientFilter, RecipeFilter
@@ -86,11 +87,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ingredient_name = ingredient['ingredient__name']
             measurement_unit = ingredient['ingredient__measurement_unit']
             amount = ingredient['amount']
-            shopping_list.append(f"{ingredient_name} ({measurement_unit}) - {amount}")
+            shopping_list.append(
+                f"{ingredient_name} ({measurement_unit}) - {amount}")
 
         shopping_list_text = '\n'.join(shopping_list)
         response = HttpResponse(shopping_list_text, content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename=shopping_list.txt'
+        response['Content-Disposition'] = \
+            'attachment; filename=shopping_list.txt'
         return response
 
     @action(detail=False, methods=['GET'])
@@ -127,7 +130,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             pk (int): The primary key of the recipe.
 
         Returns:
-            Response: The response containing the serialized shopping cart data.
+            Response: The response containing
+            the serialized shopping cart data.
 
         """
         context = {'request': request}
@@ -178,7 +182,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             Response: The response containing the serialized favorite data.
 
         """
-        context = {"request": request}
+        context = {'request': request}
         recipe = get_object_or_404(Recipe, id=pk)
         data = {
             'user': request.user.id,
@@ -233,7 +237,8 @@ class UserViewSet(UserViewSet):
             id (int): The primary key of the user to subscribe/unsubscribe to.
 
         Returns:
-            Response: The response indicating the success of the subscription/unsubscription.
+            Response: The response indicating the success
+            of the subscription/unsubscription.
 
         """
         user = request.user
@@ -262,7 +267,8 @@ class UserViewSet(UserViewSet):
             request (Request): The HTTP request.
 
         Returns:
-            Response: The paginated response containing the serialized subscribed users.
+            Response: The paginated response containing
+            the serialized subscribed users.
 
         """
         user = request.user
@@ -272,4 +278,3 @@ class UserViewSet(UserViewSet):
             pages, many=True, context={'request': request}
         )
         return self.get_paginated_response(serializer.data)
-

@@ -1,12 +1,15 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCart, Tag)
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
+
+from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+                            ShoppingCart, Tag)
 from users.models import User
+
 
 
 class UserSerializer(UserSerializer):
@@ -14,7 +17,8 @@ class UserSerializer(UserSerializer):
     Serializer class for User model.
 
     Attributes:
-        is_subscribed: Boolean field indicating if the user is subscribed to the current user.
+        is_subscribed: Boolean field indicating
+        if the user is subscribed to the current user.
 
     """
     is_subscribed = SerializerMethodField(read_only=True)
@@ -36,7 +40,9 @@ class UserSerializer(UserSerializer):
 
         """
         if self.context['request'].user.is_authenticated:
-            return obj.following.filter(user=self.context['request'].user).exists()
+            return obj.following.filter(
+                user=self.context['request'].user
+            ).exists()
         return False
 
 
@@ -99,11 +105,13 @@ class SubscribeListSerializer(UserSerializer):
         """
         Get the user's recipes.
 
-        Optionally limit the number of recipes returned based on the 'recipes_limit' query parameter.
+        Optionally limit the number of recipes returned
+        based on the 'recipes_limit' query parameter.
 
         """
         limit = self.context['request'].query_params.get('recipes_limit')
-        recipes = obj.recipes.all()[:int(limit)] if limit else obj.recipes.all()
+        recipes = obj.recipes.all()[:int(
+            limit)] if limit else obj.recipes.all()
         serializer = RecipeShortSerializer(recipes, many=True, read_only=True)
         return serializer.data
 
@@ -210,16 +218,19 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     def validate_tags(self, tags):
         for tag in tags:
             if not Tag.objects.filter(id=tag.id).exists():
-                raise serializers.ValidationError('Specified tag does not exist')
+                raise serializers.ValidationError(
+                    'Specified tag does not exist')
         return tags
 
     def validate_cooking_time(self, cooking_time):
-        if cooking_time < 1:
+        if cooking_time < settings.ONE_MINUTE:
             raise serializers.ValidationError('Cooking time should be at least 1 minute')
+        if cooking_time > settings.MAX_COOKING_TIME:
+            raise serializers.ValidationError('Cooking time cannot exceed 32000 minutes')
         return cooking_time
 
     def validate_ingredients(self, ingredients):
-        ingredient_ids = []
+        ingredient_ids = set()
         if not ingredients:
             raise serializers.ValidationError('Ingredients are missing')
         for ingredient in ingredients:
@@ -228,8 +239,9 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('Ingredients must be unique')
             ingredient_ids.append(ingredient_id)
             amount = ingredient.get('amount')
-            if amount is not None and int(amount) < 1:
-                raise serializers.ValidationError('Ingredient amount must be greater than 0')
+            if amount is not None and int(amount) < settings.ONE_INGREDIENT:
+                raise serializers.ValidationError(
+                    'Ingredient amount must be greater than 0')
         return ingredients
 
     @staticmethod
@@ -255,7 +267,8 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.image = validated_data.get('image', instance.image)
-        instance.cooking_time = validated_data.get('cooking_time', instance.cooking_time)
+        instance.cooking_time = validated_data.get(
+            'cooking_time', instance.cooking_time)
         instance.name = validated_data.get('name', instance.name)
         instance.text = validated_data.get('text', instance.text)
         instance.save()
@@ -272,7 +285,8 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                     if delete:
                         instance.ingredients.remove(ingredient)
                     else:
-                        instance.ingredients.add(ingredient, through_defaults={'amount': amount})
+                        instance.ingredients.add(
+                            ingredient, through_defaults={'amount': amount})
 
         tags = validated_data.get('tags')
         if tags:
@@ -318,12 +332,14 @@ class FavoriteSerializer(serializers.ModelSerializer):
             dict: The validated data.
 
         Raises:
-            serializers.ValidationError: If the recipe is already added to favorites.
+            serializers.ValidationError: If the recipe is already added
+            to favorites.
 
         """
         user = data['user']
         if user.favorites.filter(recipe=data['recipe']).exists():
-            raise serializers.ValidationError('Recipe is already added to favorites.')
+            raise serializers.ValidationError(
+                'Recipe is already added to favorites.')
         return data
 
     def to_representation(self, instance):
@@ -364,12 +380,14 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
             dict: The validated data.
 
         Raises:
-            serializers.ValidationError: If the recipe is already added to the shopping cart.
+            serializers.ValidationError: If the recipe is already added
+            to the shopping cart.
 
         """
         user = data['user']
         if user.shopping_list.filter(recipe=data['recipe']).exists():
-            raise serializers.ValidationError('Recipe is already added to the shopping cart.')
+            raise serializers.ValidationError(
+                'Recipe is already added to the shopping cart.')
         return data
 
     def to_representation(self, instance):

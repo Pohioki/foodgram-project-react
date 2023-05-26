@@ -171,8 +171,13 @@ LENGTH_RECIPES = 150
 
 LENGTH_USERS = 200
 
+ONE_MINUTE = 1
+
+MAX_COOKING_TIME = 32000
+
+ONE_INGREDIENT = 1
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-

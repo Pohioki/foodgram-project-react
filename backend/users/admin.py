@@ -26,6 +26,5 @@ class FollowAdmin(admin.ModelAdmin):
     empty_value_display = '-empty-'
 
 
-
 admin.site.register(Follow, FollowAdmin)
 admin.site.register(User, UserAdmin)
