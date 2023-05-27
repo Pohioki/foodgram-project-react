@@ -56,7 +56,7 @@ jobs:
       - build_push_frontend_to_DockerHub:
     steps:
       - name: executing remote ssh commands to deploy
-        uses: appleboy/ssh-action@master
+        uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
