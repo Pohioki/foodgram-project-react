@@ -58,10 +58,9 @@ jobs:
             sudo docker pull pohioki/foodgram_backend:latest
             sudo docker stop $(sudo docker ps -a -q)
             cd ~
-            sudo docker-compose up -d --build
+            sudo docker-compose up -d
             sudo docker-compose exec -T web python manage.py makemigrations
-            sudo docker-compose exec -T web python manage.py migrate 
-            sudo docker-compose exec  -T web python manage.py collectstatic 
+            sudo docker-compose exec -T web python manage.py migrate  
 
             
 
