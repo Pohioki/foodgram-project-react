@@ -223,9 +223,13 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     def validate_cooking_time(self, cooking_time):
         if cooking_time < settings.ONE_MINUTE:
-            raise serializers.ValidationError('Cooking time should be at least 1 minute')
+            raise serializers.ValidationError(
+                'Cooking time should be at least 1 minute'
+            )
         if cooking_time > settings.MAX_COOKING_TIME:
-            raise serializers.ValidationError('Cooking time cannot exceed 32000 minutes')
+            raise serializers.ValidationError(
+                'Cooking time cannot exceed 32000 minutes'
+            )
         return cooking_time
 
     def validate_ingredients(self, ingredients):
