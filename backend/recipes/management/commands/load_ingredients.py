@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'Import data from ingredients.csv'
 
     def handle(self, *args, **options):
-        with open ('data/ingredients.csv', encoding='utf-8') as file:
+        with open('data/ingredients.csv', encoding='utf-8') as file:
             reader = csv.reader(file)
             next(reader)
             ingredients = [
