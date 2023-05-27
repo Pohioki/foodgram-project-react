@@ -240,7 +240,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             ingredient_id = ingredient.get('id')
             if ingredient_id in ingredient_ids:
                 raise serializers.ValidationError('Ingredients must be unique')
-            ingredient_ids.append(ingredient_id)
+            ingredient_ids.add(ingredient_id)
             amount = ingredient.get('amount')
             if amount is not None and int(amount) < settings.ONE_INGREDIENT:
                 raise serializers.ValidationError(
