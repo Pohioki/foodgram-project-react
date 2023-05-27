@@ -53,6 +53,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo docker pull pohioki/foodgram_backend:latest
             sudo docker stop $(sudo docker ps -a -q)
