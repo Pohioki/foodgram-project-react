@@ -12,16 +12,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Copy docs
-      uses: garygrossgarten/github-action-scp@release
-      with:
-          local: docs
-          remote: /${{ secrets.SERVER_USER }}/foodgram/docs/
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          privateKey: ${{ secrets.SSH_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-
   build_push_backend_to_DockerHub:
     name: Building back image and pushing it to Docker Hub
     runs-on: ubuntu-22.04
