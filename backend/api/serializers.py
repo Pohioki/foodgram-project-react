@@ -11,7 +11,6 @@ from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
 from users.models import User
 
 
-
 class UserSerializer(UserSerializer):
     """
     Serializer class for User model.
