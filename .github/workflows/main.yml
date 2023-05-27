@@ -54,7 +54,6 @@ jobs:
     needs:
       - build_push_backend_to_DockerHub:
       - build_push_frontend_to_DockerHub:
-    if: github.ref == 'refs/heads/master'
     steps:
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
