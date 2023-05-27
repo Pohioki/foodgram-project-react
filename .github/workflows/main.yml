@@ -19,7 +19,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         privateKey: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
-        command: mkdir -p foodgram && mkdir -p foodgram/docs
+        command: mkdir foodgram && mkdir foodgram/docs
 
     - name: Copy infra files
       uses: garygrossgarten/github-action-scp@release
