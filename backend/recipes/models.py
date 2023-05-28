@@ -58,7 +58,7 @@ class Tag(models.Model):
         unique=True,
         validators=[
             RegexValidator(
-                regex="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+                regex='^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
                 message='Check the input format',
             )
         ],
@@ -91,8 +91,8 @@ class Tag(models.Model):
         new_slug = slug_base
         while new_slug in existing_slugs:
             suffix += 1
-            new_slug = f"{slug_base}-{suffix}"
-        return f"-{suffix}" if suffix > 1 else ""
+            new_slug = f'{slug_base}-{suffix}'
+        return f'-{suffix}' if suffix > 1 else ''
 
 
 class Recipe(models.Model):
