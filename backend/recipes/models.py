@@ -223,7 +223,7 @@ class IngredientRecipe(models.Model):
         related_name='ingredient_to_recipe'
     )
     amount = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(settings.ONE_INGREDIENT)],
+        validators=[MinValueValidator(settings.ONE_INGREDIENT), MaxValueValidator(settings.MAX_INGREDIENTS_COUNT)],
         verbose_name='Amount'
     )
 
