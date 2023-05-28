@@ -242,11 +242,13 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('Ingredients must be unique')
             ingredient_ids.add(ingredient_id)
             amount = ingredient.get('amount')
-            if amount is not None and settings.MAX_INGREDIENTS_COUNT \
-                    < int(amount) < settings.ONE_INGREDIENT:
+            if amount is not None and int(amount) < settings.ONE_INGREDIENT:
                 raise serializers.ValidationError(
-                    'Ingredient amount must be greater than 0 '
-                    'and smaller than 32000'
+                    'Ingredient amount must be greater than 0'
+                )
+            if int(amount) > settings.MAX_INGREDIENTS_COUNT:
+                raise serializers.ValidationError(
+                    'Ingredient amount must be smaller than 32000'
                 )
         return ingredients
 
