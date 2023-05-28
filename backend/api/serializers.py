@@ -245,7 +245,8 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             if amount is not None and settings.MAX_INGREDIENTS_COUNT \
                     < int(amount) < settings.ONE_INGREDIENT:
                 raise serializers.ValidationError(
-                    'Ingredient amount must be greater than 0 and smaller than 32000'
+                    'Ingredient amount must be greater than 0 '
+                    'and smaller than 32000'
                 )
         return ingredients
 

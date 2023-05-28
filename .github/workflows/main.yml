@@ -41,7 +41,7 @@ jobs:
         with:
           context: backend/
           push: true
-          tags: pohioki/food:latest
+          tags: pohioki/foodgram_backend:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -55,12 +55,14 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker pull pohioki/foodgram_backend:latest
             sudo docker stop $(sudo docker ps -a -q)
-            cd ~
+            sudo docker rm backend
+            sudo docker rmi pohioki/foodgram_backend:latest
+            sudo docker pull pohioki/foodgram_backend:latest
             sudo docker-compose up -d
             sudo docker-compose exec -T web python manage.py makemigrations
-            sudo docker-compose exec -T web python manage.py migrate  
+            sudo docker-compose exec -T web python manage.py migrate
+            sudo docker-compose exec web python manage.py loaddata dump.json
 
             
 
