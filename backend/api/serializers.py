@@ -246,7 +246,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Ingredient amount must be greater than 0'
                 )
-            if int(amount) > settings.MAX_INGREDIENTS_COUNT:
+            if amount > settings.MAX_INGREDIENTS_COUNT:
                 raise serializers.ValidationError(
                     'Ingredient amount must be smaller than 32000'
                 )
