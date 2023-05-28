@@ -284,7 +284,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 amount = ingredient_data.get('amount')
                 delete = ingredient_data.get('delete', False)
                 if ingredient_id:
-                    ingredient = Ingredient.objects.get(id=ingredient_id)
+                    ingredient = Ingredient.objects.get(id=ingredient_id.id)
                     if delete:
                         instance.ingredients.remove(ingredient)
                     else:
